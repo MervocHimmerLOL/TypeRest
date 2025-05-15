@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Добро пожаловать в наш ресторан!</h1>
+    
+    {% if user.is_authenticated %}
+        <div class="auth-box">
+            <p>Вы вошли как <strong>{{ user.username }}</strong></p>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn">Выйти</button>
+            </form>
+            <a href="{% url 'profile' %}" class="btn">Профиль</a>
+        </div>
+    {% else %}
+        <div class="auth-box">
+            <a href="{% url 'login' %}" class="btn">Войти</a>
+            <a href="{% url 'register' %}" class="btn">Регистрация</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        text-align: center;
+    }
+    .auth-box {
+        margin-top: 30px;
+    }
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 0 10px;
+        background: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    .btn:hover {
+        background: #45a049;
+    }
+</style>
+{% endblock %}
