@@ -1,5 +1,6 @@
 from django.shortcuts import render
-
+from .models import Dish
 # Create your views here.
 def home(request):
-    return render(request, 'home/index.html', {'user' : request.user})
+    dishes = Dish.objects.all()
+    return render(request, 'home/index.html', {'dishes' : dishes})

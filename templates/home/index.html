@@ -5,20 +5,23 @@
     <h1>Добро пожаловать в наш ресторан!</h1>
     
     {% if user.is_authenticated %}
-        <div class="auth-box">
+        <div class="auth-info">
             <p>Вы вошли как <strong>{{ user.username }}</strong></p>
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn">Выйти</button>
-            </form>
-            <a href="{% url 'profile' %}" class="btn">Профиль</a>
-        </div>
-    {% else %}
-        <div class="auth-box">
-            <a href="{% url 'login' %}" class="btn">Войти</a>
-            <a href="{% url 'register' %}" class="btn">Регистрация</a>
+            <a href="{% url 'profile' %}" class="profile-link">Профиль</a>
         </div>
     {% endif %}
+
+    <div class="menu-section">
+        <h2>Наше меню</h2>
+        <ul class="menu-list">
+            {% for dish in dishes %}
+                <li class="menu-item">
+                    <span class="dish-name">{{ dish.name }}</span>
+                    <span class="dish-price">{{ dish.price }}₽</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 
 <style>
@@ -26,21 +29,62 @@
         max-width: 800px;
         margin: 50px auto;
         text-align: center;
+        font-family: Arial, sans-serif;
     }
-    .auth-box {
-        margin-top: 30px;
+
+    .auth-info {
+        margin: 20px 0;
+        color: #555;
     }
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 0 10px;
-        background: #4CAF50;
-        color: white;
+
+    .profile-link {
+        color: #4CAF50;
         text-decoration: none;
-        border-radius: 5px;
+        font-weight: bold;
     }
-    .btn:hover {
-        background: #45a049;
+
+    .profile-link:hover {
+        text-decoration: underline;
+    }
+
+    .menu-section {
+        margin-top: 40px;
+        text-align: left;
+    }
+
+    .menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+    .menu-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 15px;
+        margin: 8px 0;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .dish-name {
+        font-weight: bold;
+    }
+
+    .dish-price {
+        color: #4CAF50;
+        font-weight: bold;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    h2 {
+        color: #444;
+        border-bottom: 2px solid #4CAF50;
+        padding-bottom: 10px;
     }
 </style>
 {% endblock %}
