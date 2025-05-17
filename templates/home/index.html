@@ -2,25 +2,49 @@
 
 {% block content %}
 <div class="container">
-    <h1>Добро пожаловать в наш ресторан!</h1>
-    
     {% if user.is_authenticated %}
         <div class="auth-info">
-            <p>Вы вошли как <strong>{{ user.username }}</strong></p>
-            <a href="{% url 'profile' %}" class="profile-link">Профиль</a>
+            <p>Добрый день,  <strong>{{ user.username }}</strong>!</p>
         </div>
     {% endif %}
 
     <div class="menu-section">
         <h2>Наше меню</h2>
+            <!-- Фильтр по категориям -->
+            <form method="get" class="category-filter">
+                <label for="category">Категория:</label>
+                <select name="category" id="category" onchange="this.form.submit()">
+                    <option value="">Все</option>
+                    {% for category in categories %}
+                     <option value="{{ category }}" {% if category == current_category %}selected{% endif %}>
+                            {{ category }}
+                     </option>
+                    {% endfor %}
+                </select>
+            </form>
+
         <ul class="menu-list">
             {% for dish in dishes %}
                 <li class="menu-item">
-                    <span class="dish-name">{{ dish.name }}</span>
-                    <span class="dish-price">{{ dish.price }}₽</span>
+                    <div class="dish-info">
+                        <span class="dish-name">{{ dish.name }}</span>
+                        <span class="dish-price">{{ dish.price }}₽</span>
+                    </div>
+                    <form method="post" class="add-to-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                        <button type="submit" class="add-to-cart-btn">+</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>
+
+        <div class="cart-link-container">
+            <a href="{% url 'view_cart' %}" class="cart-link">
+                Перейти в корзину
+                <span class="cart-icon">🛒</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -61,11 +85,16 @@
     .menu-item {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         padding: 12px 15px;
         margin: 8px 0;
         background: white;
         border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .dish-info {
+        flex-grow: 1;
     }
 
     .dish-name {
@@ -75,6 +104,51 @@
     .dish-price {
         color: #4CAF50;
         font-weight: bold;
+        margin-left: 10px;
+    }
+
+    .add-to-cart-form {
+        margin-left: 15px;
+    }
+
+    .add-to-cart-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .add-to-cart-btn:hover {
+        background: #45a049;
+    }
+
+    .cart-link-container {
+        margin-top: 30px;
+        text-align: right;
+    }
+
+    .cart-link {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .cart-link:hover {
+        background: #45a049;
+    }
+
+    .cart-icon {
+        margin-left: 8px;
     }
 
     h1 {

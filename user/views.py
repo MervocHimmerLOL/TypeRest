@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from order.models import Order
 from user.form import RegisterForm
 
 
@@ -21,4 +21,7 @@ def register(request):
     return render(request, 'user/register.html', {'form': form})
 
 def profile(request):
-    return render(request, 'user/profile.html')
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'user/profile.html', {
+        'orders': orders
+    })
