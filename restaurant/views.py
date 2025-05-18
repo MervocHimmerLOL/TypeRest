@@ -1,26 +1,42 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from unicodedata import category
-
 from .models import Dish
 from order.models import Order, OrderItems
-# Create your views here.
 
 
+# Вьюшки ресторана - самая нагруженная часть кода. С одной стороны, логику корзинки можно было бы перенести в order
+# А с другой - как будто бы и тут хорошо сидит
+
+# Стартовая страница. Дом. Показывает блюда по фильтру, а если вы и залогиненны - даже даст добавить их в корзину
 def home(request):
     category_filter = request.GET.get('category')
+
     if category_filter:
         dishes = Dish.objects.filter(category=category_filter)
     else:
         dishes = Dish.objects.all()
 
     categories = Dish.objects.values_list('category', flat=True).distinct()
+
+    if request.method == 'POST':
+        dish_id = str(request.POST.get('dish_id'))
+        cart = request.session.get('cart', {})
+
+        if dish_id in cart:
+            cart[dish_id] += 1
+        else:
+            cart[dish_id] = 1
+
+        request.session['cart'] = cart
+
     return render(request, 'home/index.html', {
         'dishes': dishes,
         'categories': categories,
         'current_category': category_filter
     })
 
+
+# Просмотр корзинки - только для своих
 @login_required
 def view_cart(request):
     cart = request.session.get('cart', {})
@@ -40,6 +56,8 @@ def view_cart(request):
         'total': total
     })
 
+
+# Создание заказа - только для своих. Можно будет добавить настоящую оплату
 @login_required
 def place_order(request):
     if request.method == 'POST':
@@ -66,9 +84,10 @@ def place_order(request):
         request.session['cart'] = {}
         return render(request, 'restaurant/order_success.html', {'order': order})
 
-
     return redirect('home')
 
+
+# Плюсик в корзинке
 @login_required
 def add_to_cart(request, dish_id):
     cart = request.session.get('cart', {})
@@ -77,6 +96,8 @@ def add_to_cart(request, dish_id):
     referer = request.META.get('HTTP_REFERER', '/')
     return redirect(referer)
 
+
+# Минусик в корзинке
 @login_required
 def remove_from_cart(request, dish_id):
     cart = request.session.get('cart', {})
@@ -88,6 +109,8 @@ def remove_from_cart(request, dish_id):
     referer = request.META.get('HTTP_REFERER', '/')
     return redirect(referer)
 
+
+# Удаление пункта из корзинки
 @login_required
 def delete_from_cart(request, dish_id):
     cart = request.session.get('cart', {})
@@ -96,6 +119,8 @@ def delete_from_cart(request, dish_id):
     referer = request.META.get('HTTP_REFERER', '/')
     return redirect(referer)
 
+
+# Тотальная отчистка. Где? В корзинке
 @login_required
 def clear_cart(request):
     request.session['cart'] = {}

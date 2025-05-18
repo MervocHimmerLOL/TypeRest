@@ -1,4 +1,5 @@
 from django.contrib import admin
 from .models import Dish
-# Register your models here.
+
+# Тут мы зарегистрировали нашу модель блюда
 admin.site.register(Dish)

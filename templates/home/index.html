@@ -10,7 +10,6 @@
 
     <div class="menu-section">
         <h2>Наше меню</h2>
-            <!-- Фильтр по категориям -->
             <form method="get" class="category-filter">
                 <label for="category">Категория:</label>
                 <select name="category" id="category" onchange="this.form.submit()">
@@ -27,28 +26,44 @@
             {% for dish in dishes %}
                 <li class="menu-item">
                     <div class="dish-info">
-                        <span class="dish-name">{{ dish.name }}</span>
+                        {% if dish.image %}
+                            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-img">
+                        {% endif %}
+                        <span class="dish-name">{{ dish.name }}.</span>
+                        <span class="dish-desc">{{ dish.description }} </span>
                         <span class="dish-price">{{ dish.price }}₽</span>
+
                     </div>
-                    <form method="post" class="add-to-cart-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="dish_id" value="{{ dish.id }}">
-                        <button type="submit" class="add-to-cart-btn">+</button>
-                    </form>
+                    {% if user.is_authenticated %}
+                        <form method="post" class="add-to-cart-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                            <button type="submit" class="add-to-cart-btn">+</button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
-
-        <div class="cart-link-container">
-            <a href="{% url 'view_cart' %}" class="cart-link">
-                Перейти в корзину
-                <span class="cart-icon">🛒</span>
-            </a>
-        </div>
+        {% if user.is_authenticated %}
+            <div class="cart-link-container">
+                <a href="{% url 'view_cart' %}" class="cart-link">
+                    Перейти в корзину
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>
 
 <style>
+
+    .dish-img {
+        width: 100px;
+        height: auto;
+        border-radius: 8px;
+        margin-right: 15px;
+    }
+
+
     .container {
         max-width: 800px;
         margin: 50px auto;
@@ -99,6 +114,10 @@
 
     .dish-name {
         font-weight: bold;
+    }
+
+    .dish-desc {
+
     }
 
     .dish-price {
