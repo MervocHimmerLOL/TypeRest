@@ -8,24 +8,24 @@
     <h3>Ваши заказы</h3>
 
     {% if orders %}
-        <ul class="order-list">
-            {% for order in orders %}
-                <li class="order-item">
-                    <div class="order-header">
-                        <strong>Заказ #{{ order.id }}</strong> — {{ order.get_status_display }}
-                        <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
-                    </div>
-                    <p>Сумма: <strong>{{ order.total }} ₽</strong></p>
-                    <ul class="order-dishes">
-                        {% for item in order.items.all %}
-                            <li>{{ item.dish.name }} — {{ item.quantity }} шт. × {{ item.price_at_order }} ₽</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
+    <ul class="order-list">
+        {% for order in orders %}
+        <li class="order-item">
+            <div class="order-header">
+                <strong>Заказ #{{ order.id }}</strong> — {{ order.get_status_display }}
+                <span class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+            </div>
+            <p>Сумма: <strong>{{ order.total }} ₽</strong></p>
+            <ul class="order-dishes">
+                {% for item in order.items.all %}
+                <li>{{ item.dish.name }} — {{ item.quantity }} шт. × {{ item.price_at_order }} ₽</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
     {% else %}
-        <p>У вас пока нет заказов.</p>
+    <p>У вас пока нет заказов.</p>
     {% endif %}
 </div>
 

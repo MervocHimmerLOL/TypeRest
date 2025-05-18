@@ -3,53 +3,53 @@
 {% block content %}
 <div class="container">
     {% if user.is_authenticated %}
-        <div class="auth-info">
-            <p>Добрый день,  <strong>{{ user.username }}</strong>!</p>
-        </div>
+    <div class="auth-info">
+        <p>Добрый день, <strong>{{ user.username }}</strong>!</p>
+    </div>
     {% endif %}
 
     <div class="menu-section">
         <h2>Наше меню</h2>
-            <form method="get" class="category-filter">
-                <label for="category">Категория:</label>
-                <select name="category" id="category" onchange="this.form.submit()">
-                    <option value="">Все</option>
-                    {% for category in categories %}
-                     <option value="{{ category }}" {% if category == current_category %}selected{% endif %}>
-                            {{ category }}
-                     </option>
-                    {% endfor %}
-                </select>
-            </form>
+        <form method="get" class="category-filter">
+            <label for="category">Категория:</label>
+            <select name="category" id="category" onchange="this.form.submit()">
+                <option value="">Все</option>
+                {% for category in categories %}
+                <option value="{{ category }}" {% if category== current_category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
 
         <ul class="menu-list">
             {% for dish in dishes %}
-                <li class="menu-item">
-                    <div class="dish-info">
-                        {% if dish.image %}
-                            <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-img">
-                        {% endif %}
-                        <span class="dish-name">{{ dish.name }}.</span>
-                        <span class="dish-desc">{{ dish.description }} </span>
-                        <span class="dish-price">{{ dish.price }}₽</span>
-
-                    </div>
-                    {% if user.is_authenticated %}
-                        <form method="post" class="add-to-cart-form">
-                            {% csrf_token %}
-                            <input type="hidden" name="dish_id" value="{{ dish.id }}">
-                            <button type="submit" class="add-to-cart-btn">+</button>
-                        </form>
+            <li class="menu-item">
+                <div class="dish-info">
+                    {% if dish.image %}
+                    <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-img">
                     {% endif %}
-                </li>
+                    <span class="dish-name">{{ dish.name }}.</span>
+                    <span class="dish-desc">{{ dish.description }} </span>
+                    <span class="dish-price">{{ dish.price }}₽</span>
+
+                </div>
+                {% if user.is_authenticated %}
+                <form method="post" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="dish_id" value="{{ dish.id }}">
+                    <button type="submit" class="add-to-cart-btn">+</button>
+                </form>
+                {% endif %}
+            </li>
             {% endfor %}
         </ul>
         {% if user.is_authenticated %}
-            <div class="cart-link-container">
-                <a href="{% url 'view_cart' %}" class="cart-link">
-                    Перейти в корзину
-                </a>
-            </div>
+        <div class="cart-link-container">
+            <a href="{% url 'view_cart' %}" class="cart-link">
+                Перейти в корзину
+            </a>
+        </div>
         {% endif %}
     </div>
 </div>
