@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Вход</h2>
+    <form method="post" class="form-block">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="form-btn">Войти</button>
+    </form>
+</div>
+
+<style>
+    .container {
+        max-width: 500px;
+        margin: 50px auto;
+        font-family: Arial, sans-serif;
+        text-align: left;
+    }
+
+    .form-block {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .form-block p {
+        margin-bottom: 15px;
+    }
+
+    .form-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .form-btn:hover {
+        background: #45a049;
+    }
+
+    h2 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
